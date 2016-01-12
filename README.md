@@ -12,14 +12,24 @@ gem 'rails_pg_restore'
 
 And then execute:
 
-    $ bundle
+```sh
+$ bundle
+```
 
 Or install it yourself as:
 
-    $ gem install rails_pg_restore
+```sh
+$ gem install rails_pg_restore
+```
 
 ## Usage
 
+```sh
+rails_pg_restore -h
+Usage: rails_pg_restore --backup=path/to/backup.dump
+    -b, --backup BACKUP_LOCATION     Require the BACKUP_LOCATION before restoring
+    -e, --environment [ENVIRONMENT]  Specify the rails environment, defaults to development
+```
 ```sh
 $ rails_pg_restore --backup=path/to/backup.dump
 $ rails_pg_restore --backup=path/to/backup.dump --environment=development
