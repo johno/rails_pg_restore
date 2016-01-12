@@ -1,5 +1,7 @@
 # rails_pg_restore
 
+CLI to restore a postgres database from a backup. Infers db config from config/database.yml.
+
 ## Installation
 
 Add this line to your application's Gemfile:
