@@ -33,9 +33,13 @@ env ||= 'development'
 
 config_for_env = db_config[env] || {}
 
-username = db_config[env]['username']
-db_name = db_config[env]['database']
-hostname = db_config[env]['hostname'] || 'localhost'
+username = config_for_env['username']
+db_name = config_for_env['database']
+hostname = config_for_env['hostname'] || 'localhost'
+
+unless username && db_name && hostname
+  abort('Please ensure you config/database.yml contains a username and database name')
+end
 
 puts "Restoring #{db_name} from #{backup_location}.\nThis could take a few minutes"
 
