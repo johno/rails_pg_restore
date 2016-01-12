@@ -1,0 +1,53 @@
+#!/usr/bin/env ruby
+
+require 'yaml'
+require 'optparse'
+
+begin
+  db_config = YAML.load_file('config/database.yml')
+rescue
+  puts "Database config couldn't be read, please make sure there is a config/database.yml"
+end
+
+env = nil
+backup_location = nil
+OptionParser.new do |opts|
+  opts.banner = 'Usage: rails_pg_restore --backup=path/to/backup.dump'
+
+  opts.on('-b', '--backup BACKUP_LOCATION',
+          'Require the BACKUP_LOCATION before restoring') do |backup_loc|
+    backup_location = backup_loc
+  end
+
+  opts.on('-e', '--environment [ENVIRONMENT]',
+          'Specify the rails environment, defaults to development') do |e|
+    env = e
+  end
+end.parse!
+
+unless backup_location && File.exist?(backup_location)
+  abort("Couldn't read a backup location at #{backup_location.inspect}")
+end
+
+env ||= 'development'
+
+config_for_env = db_config[env] || {}
+
+username = db_config[env]['username']
+db_name = db_config[env]['database']
+hostname = db_config[env]['hostname'] || 'localhost'
+
+puts "Restoring #{db_name} from #{backup_location}.\nThis could take a few minutes"
+
+command = <<SH
+pg_restore --verbose --clean --no-acl --no-owner \
+  -h #{hostname} \
+  -U #{username} \
+  -d #{db_name} \
+  #{backup_location}
+SH
+
+puts "Executing #{command}"
+
+result = exec(command)
+puts result
