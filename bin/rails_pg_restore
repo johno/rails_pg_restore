@@ -1,10 +1,12 @@
 #!/usr/bin/env ruby
 
 require 'yaml'
+require 'erb'
 require 'optparse'
+require_relative "#{Dir.pwd}/config/environment"
 
 begin
-  db_config = YAML.load_file('config/database.yml')
+  db_config = YAML.load(ERB.new(File.read('config/database.yml')).result)
 rescue
   puts "Database config couldn't be read, please make sure there is a config/database.yml"
 end
